@@ -16,17 +16,24 @@ const prevGroupBtn = document.getElementById('prevGroupBtn');
 const nextGroupBtn = document.getElementById('nextGroupBtn');
 
 async function fetchPrompts() {
-    const response = await fetch('prompts.txt');
-    const text = await response.text();
-    const prompts = text.split('\n').filter(line => line.trim() !== '');
-    totalItems = prompts.length;
-    totalPages = Math.ceil(totalItems / itemsPerPage);
-    data = prompts.map((prompt, index) => ({
-        triggerPrompt: prompt,
-        images: Array.from({ length: 4 }, (_, i) => `https://membench.s3.ap-southeast-2.amazonaws.com/${String(index).padStart(4, '0')}_${i}.png`)
-    }));
-    renderGallery(currentPage);
-    renderPagination();
+    try {
+        const response = await fetch('https://membench.s3.ap-southeast-2.amazonaws.com/prompts.txt');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const text = await response.text();
+        const prompts = text.split('\n').filter(line => line.trim() !== '');
+        totalItems = prompts.length;
+        totalPages = Math.ceil(totalItems / itemsPerPage);
+        data = prompts.map((prompt, index) => ({
+            triggerPrompt: prompt,
+            images: Array.from({ length: 4 }, (_, i) => `https://membench.s3.ap-southeast-2.amazonaws.com/${String(index).padStart(4, '0')}_${i}.png`)
+        }));
+        renderGallery(currentPage);
+        renderPagination();
+    } catch (error) {
+        console.error('Error fetching prompts:', error);
+    }
 }
 
 function renderGallery(page) {
