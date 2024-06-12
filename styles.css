@@ -72,3 +72,15 @@ body {
 .page.active {
     background: #007bff;
 }
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    height: auto;
+  }
+  
